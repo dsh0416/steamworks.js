@@ -118,7 +118,13 @@ jobs:
           packages: write
 
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
+   
+            - uses: actions/setup-node@v4
+              with:
+                node-version: '22.x'
+                registry-url: 'https://npm.pkg.github.com'
+                scope: '@dsh0416'
 
             - name: Download build
               uses: actions/download-artifact@v4
@@ -126,12 +132,6 @@ jobs:
                   path: dist/
                   pattern: binaries-*
                   merge-multiple: true
-            
-            - uses: actions/setup-node@v4
-              with:
-                node-version: '22.x'
-                registry-url: 'https://npm.pkg.github.com'
-                scope: '@dsh0416'
 
             - name: Log files
               run: |
