@@ -335,7 +335,8 @@ export declare namespace workshop {
    * Get all subscribed workshop items.
    * @returns an array of subscribed workshop item ids
    */
-  export function getSubscribedItems(): Array<bigint>
+  export function getSubscribedItems(includeLocallyDisabled: boolean): Array<bigint>
+  export function deleteItem(itemId: bigint): Promise<void>
   export const enum UGCQueryType {
     RankedByVote = 0,
     RankedByPublicationDate = 1,
