@@ -122,14 +122,17 @@ jobs:
                   path: dist/
                   pattern: binaries-*
                   merge-multiple: true
+            
+            - uses: actions/setup-node@v4
+              with:
+                node-version: '22.x'
+                registry-url: 'https://npm.pkg.github.com'
 
             - name: Log files
               run: |
                   echo "- Root directory:" && ls
                   echo "- Dist directory:" && ls -R dist
 
-            - name: Publish to npm
-              uses: JS-DevTools/npm-publish@v1
-              with:
-                  token: ${{ secrets.GITHUB_TOKEN }}
-                  registry: "https://npm.pkg.github.com"
+            - run: npm publish
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
