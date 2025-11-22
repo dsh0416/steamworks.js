@@ -113,6 +113,10 @@ jobs:
         runs-on: ubuntu-latest
         needs: [build, build-mac]
 
+        permissions:
+          contents: read
+          packages: write
+
         steps:
             - uses: actions/checkout@v4
 
@@ -127,6 +131,7 @@ jobs:
               with:
                 node-version: '22.x'
                 registry-url: 'https://npm.pkg.github.com'
+                scope: '@dsh0416'
 
             - name: Log files
               run: |
@@ -135,4 +140,4 @@ jobs:
 
             - run: npm publish
               env:
-                  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
