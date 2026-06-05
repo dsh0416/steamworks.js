@@ -44,10 +44,10 @@ const params = [
     'build',
     '--platform',
     '--no-dts-header',
-    '--js', 'false',
+    '--no-js',
     '--dts', '../../client.d.ts',
-    relative,
-    process.argv.slice(2).join(' ')
+    '--output-dir', relative,
+    ...process.argv.slice(2)
 ]
 
 child_process.spawn('napi', params, { stdio: 'inherit', shell: true })

@@ -7,8 +7,8 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-napi = { version = "2.16.8", features = ["tokio_rt", "napi6", "serde-json"] }
-napi-derive = "2.16.9"
+napi = { version = "3.9.0", features = ["tokio_rt", "napi6", "serde-json"] }
+napi-derive = "3.5.6"
 lazy_static = "1"
 tokio = { version = "1", features = ["sync", "time"] }
 steamworks = { git = "https://github.com/Noxime/steamworks-rs/", rev = "40a457a61f5ef714d93804e51e0c5e3d405145a3", features = ["serde"] }

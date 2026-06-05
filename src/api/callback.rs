@@ -11,9 +11,14 @@ pub mod callback {
     };
 
     use napi::{
-        threadsafe_function::{ErrorStrategy, ThreadsafeFunction, ThreadsafeFunctionCallMode},
-        JsFunction,
+        bindgen_prelude::Function,
+        threadsafe_function::{ThreadsafeFunction, ThreadsafeFunctionCallMode},
+        Status,
     };
+
+    type CallbackFunction<'a> = Function<'a, (serde_json::Value,), ()>;
+    type CallbackThreadsafeFunction =
+        ThreadsafeFunction<serde_json::Value, (), (serde_json::Value,), Status, false>;
 
     static HANDLE_ID_COUNTER: AtomicU32 = AtomicU32::new(1);
     static CALLBACK_REGISTRY: OnceLock<Mutex<HashMap<u32, steamworks::CallbackHandle>>> =
@@ -53,12 +58,13 @@ pub mod callback {
     #[napi(ts_generic_types = "C extends keyof import('./callbacks').CallbackReturns")]
     pub fn register(
         #[napi(ts_arg_type = "C")] steam_callback: SteamCallback,
-        #[napi(ts_arg_type = "(value: import('./callbacks').CallbackReturns[C]) => void")] handler: JsFunction,
+        #[napi(ts_arg_type = "(value: import('./callbacks').CallbackReturns[C]) => void")] handler: CallbackFunction<'_>,
     ) -> Handle {
-        let threadsafe_handler: ThreadsafeFunction<serde_json::Value, ErrorStrategy::Fatal> =
-            handler
-                .create_threadsafe_function(0, |ctx| Ok(vec![ctx.value]))
-                .unwrap();
+        let threadsafe_handler = handler
+            .build_threadsafe_function()
+            .callee_handled::<false>()
+            .build_callback(|ctx| Ok((ctx.value,)))
+            .unwrap();
 
         let handle = match steam_callback {
             SteamCallback::PersonaStateChange => {
@@ -102,7 +108,7 @@ pub mod callback {
     }
 
     fn register_callback<C>(
-        threadsafe_handler: ThreadsafeFunction<serde_json::Value, ErrorStrategy::Fatal>,
+        threadsafe_handler: CallbackThreadsafeFunction,
     ) -> steamworks::CallbackHandle
     where
         C: steamworks::Callback + serde::Serialize,

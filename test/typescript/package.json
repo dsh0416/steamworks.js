@@ -5,7 +5,7 @@
         "steamworks.js": "../.."
     },
     "devDependencies": {
-        "typescript": "4.7.4"
+        "typescript": "6.0.3"
     },
     "main": "index.ts",
     "scripts": {

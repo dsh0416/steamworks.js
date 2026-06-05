@@ -18,12 +18,17 @@ pub mod matchmaking {
 
     #[napi]
     pub struct Lobby {
-        pub id: BigInt,
+        id: BigInt,
         lobby_id: LobbyId,
     }
 
     #[napi]
     impl Lobby {
+        #[napi(getter)]
+        pub fn id(&self) -> BigInt {
+            self.id.clone()
+        }
+
         #[napi]
         pub async fn join(&self) -> Result<Lobby, Error> {
             join_lobby(self.id.clone()).await
@@ -126,8 +131,7 @@ pub mod matchmaking {
         pub fn merge_full_data(&self, data: HashMap<String, String>) -> bool {
             let matchmaking = crate::client::get_client().matchmaking();
             data.iter()
-                .map(|(key, value)| matchmaking.set_lobby_data(self.lobby_id, key, value))
-                .all(|x| x)
+                .all(|(key, value)| matchmaking.set_lobby_data(self.lobby_id, key, value))
         }
     }
 
