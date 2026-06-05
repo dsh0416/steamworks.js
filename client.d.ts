@@ -1,3 +1,4 @@
+/// <reference types="node" />
 export declare function init(appId?: number | undefined | null): void
 
 export interface PlayerSteamId {

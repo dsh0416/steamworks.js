@@ -61,14 +61,14 @@ const relative = path.relative(process.cwd(), dist)
 const params = [
     'build',
     '--platform',
-    '--no-dts-header',
+    '--dts-header', '/// <reference types="node" />\n',
     '--no-js',
     '--dts', '../../client.d.ts',
     '--output-dir', relative,
     ...args
 ]
 
-child_process.spawn('napi', params, { stdio: 'inherit', shell: true })
+child_process.spawn('napi', params, { stdio: 'inherit' })
     .on('exit', err => {
         if (err) {
             throw err;
