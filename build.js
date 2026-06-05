@@ -29,7 +29,25 @@ const targets = {
     }
 }
 
-const target = targets[process.argv.at(-1)] || Object.values(targets).find(t => t.platform === process.platform && t.arch === process.arch)
+const args = process.argv.slice(2)
+const targetTriple = args.reduce((triple, arg, index) => {
+    if (triple) return triple
+    if (targets[arg]) return arg
+    if (arg.startsWith('--target=')) {
+        const value = arg.slice('--target='.length)
+        return targets[value] ? value : undefined
+    }
+    if (arg === '--target' || arg === '-t') {
+        return targets[args[index + 1]] ? args[index + 1] : undefined
+    }
+}, undefined)
+
+const target = targets[targetTriple]
+    || Object.values(targets).find(t => t.platform === process.platform && t.arch === process.arch)
+
+if (!target) {
+    throw new Error(`Unsupported target: ${targetTriple || `${process.platform}-${process.arch}`}`)
+}
 
 const dist = path.join(__dirname, 'dist', target.folder)
 const redist = path.join(__dirname, 'sdk/redistributable_bin', target.folder)
@@ -47,7 +65,7 @@ const params = [
     '--no-js',
     '--dts', '../../client.d.ts',
     '--output-dir', relative,
-    ...process.argv.slice(2)
+    ...args
 ]
 
 child_process.spawn('napi', params, { stdio: 'inherit', shell: true })
