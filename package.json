@@ -1,6 +1,6 @@
 {
     "name": "@dsh0416/steamworks.js",
-    "version": "0.4.1",
+    "version": "0.4.2",
     "main": "index.js",
     "types": "index.d.ts",
     "napi": {
@@ -43,6 +43,7 @@
         "url": "https://github.com/dsh0416/steamworks.js"
     },
     "publishConfig": {
-        "registry": "https://npm.pkg.github.com"
+        "access": "public",
+        "registry": "https://registry.npmjs.org"
     }
 }
